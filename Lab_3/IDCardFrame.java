@@ -28,16 +28,7 @@ public class IDCardFrame extends JFrame {
 		
 		GridBagConstraints layoutConst;
 		
-		image = new JLabel(new ImageIcon(getClass().getClassLoader().getResource("image.png")));
-//		try {
-//			image = new JLabel(new ImageIcon(ImageIO.read(ClassLoader.getSystemResource(("image.png")))));
-//		} catch (IOException e) {
-//			// TODO Auto-generated catch block
-//			e.printStackTrace();
-//		}
-		
-//		image = new JLabel(new ImageIO.read((new FileInputStream("resource/image.png"))));
-		
+		image = new JLabel(new ImageIcon("C:\\Users\\Tanner Yilmaz\\eclipse-workspace\\Lab_3\\src\\image.png"));
 		name = new JLabel("Name: Tanner");
 		height = new JLabel("Height: 2' 8\"");
 		weight = new JLabel("Weight: 400 lbs");
