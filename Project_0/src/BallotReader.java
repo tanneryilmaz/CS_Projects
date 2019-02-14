@@ -2,15 +2,23 @@
 import java.io.IOException;
 import java.io.FileReader;
 import java.util.Scanner;
-
+/**
+ * This class reads the contents of a ballot. 
+ * @author Tanner Yilmaz
+ */
 public class BallotReader
 {
-	 
+	/**
+	 * Reads the contents of an input file and creates new candidate objects
+	 * given the names of the candidates in the input file. Adds these candidates
+	 * to a Ballot instance.
+	 * @param filename Name of the input file.
+	 * @return A ballot with candidates and an office name. 
+	 * @throws IOException 
+	 */
 	public static Ballot readBallot(String filename)
 	throws IOException
 	{
-		// ***Replace this with the correct implementation; for now, it's
-		//    always returning a hard-coded ballot with three candidates.
 		FileReader file = new FileReader(filename);
 		Scanner sc = new Scanner(file);
 		

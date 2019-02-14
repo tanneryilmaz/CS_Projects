@@ -4,8 +4,21 @@ import java.io.IOException;
 import java.io.BufferedWriter;
 import java.io.FileWriter;
 
+/**
+ * This class writes the outputs of an election to an output file. Each candidate
+ * on a ballot along with the number of votes received by each candidate is written
+ * to the output file. The winner of the election is also written to the output 
+ * file.
+ * @author Tanner Yilmaz
+ */
 public class ResultWriter
 {
+	/**
+	 * Writes the results of an election into an output file.
+	 * @param filename Name of the file to be written to.
+	 * @param ballot The ballot whose results are to be written to the output file.
+	 * @throws IOException
+	 */
 	public static void writeResults(String filename, Ballot ballot)
 	throws IOException
 	{
