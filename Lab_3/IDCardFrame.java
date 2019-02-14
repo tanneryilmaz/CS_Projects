@@ -2,13 +2,21 @@ import java.awt.Font;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Insets;
+import java.io.FileInputStream;
+import java.io.IOException;
 
+import javax.imageio.ImageIO;
 import javax.swing.Icon;
 import javax.swing.ImageIcon;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.SwingConstants;
 
+/**
+ * IDCardFrame is an extension of JFrame and is a JFrame object with 6 JLabel fields,
+ * one of which is an image. 
+ * @author Tanner Yilmaz
+ */
 public class IDCardFrame extends JFrame {
 	
 	public JLabel image, name, programmer, height, weight, eyeColor;
@@ -20,7 +28,16 @@ public class IDCardFrame extends JFrame {
 		
 		GridBagConstraints layoutConst;
 		
-		image = new JLabel(new ImageIcon(getClass().getResource("/images/image.png")));
+		image = new JLabel(new ImageIcon(getClass().getClassLoader().getResource("image.png")));
+//		try {
+//			image = new JLabel(new ImageIcon(ImageIO.read(ClassLoader.getSystemResource(("image.png")))));
+//		} catch (IOException e) {
+//			// TODO Auto-generated catch block
+//			e.printStackTrace();
+//		}
+		
+//		image = new JLabel(new ImageIO.read((new FileInputStream("resource/image.png"))));
+		
 		name = new JLabel("Name: Tanner");
 		height = new JLabel("Height: 2' 8\"");
 		weight = new JLabel("Weight: 400 lbs");
