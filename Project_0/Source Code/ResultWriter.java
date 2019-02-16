@@ -27,8 +27,8 @@ public class ResultWriter
 		
 		int longCandidate = longestCandidate(ballot);
 		String column1Format = "%-" + longCandidate + "s";
-		String column2Format = "%1d"; //column for vote count
-		String columnsFormat = column1Format + " " + column2Format + " %n";
+		String column2Format = "%12d"; //column for vote count
+		String columnsFormat = column1Format + " " + column2Format;
 		
 		file.write("RESULTS - " + ballot.getOfficeName());
 		file.newLine();
@@ -43,6 +43,7 @@ public class ResultWriter
 		
 		for(Candidate candidate : ballot.getCandidates()) {
 			file.write(String.format(columnsFormat, candidate.toString(), candidate.getVoteCount()));
+			file.newLine();
 		}
 		
 		file.newLine();

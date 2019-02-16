@@ -1,5 +1,3 @@
-
-
 import java.io.IOException;
 import javax.swing.JOptionPane;
 
@@ -79,5 +77,7 @@ public class PerfectCandidate
 				"Output Error",
 				JOptionPane.ERROR_MESSAGE);
 		}
+		
 	}
+	
 }

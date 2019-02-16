@@ -5,7 +5,6 @@ import java.util.ArrayList;
  * This class represents a voting ballot. Each ballot has candidates that 
  * are running for office.
  * @author Tanner Yilmaz
- *
  */
 public class Ballot
 {	
@@ -70,7 +69,7 @@ public class Ballot
 	}
 	
 	/**
-	 * Determines if the result of the election was a tie.
+	 * Determines if the result of the election is a tie.
 	 * @return Returns true if the election was a tie. Returns false otherwise.
 	 */
 	public boolean isTie() {
