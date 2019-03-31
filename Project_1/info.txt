@@ -1,0 +1,18 @@
+NOTE: All percentages should be entered as values less than 1. For example, 
+7% should be entered as 0.07, not as 7.
+
+Currently, the program crashes if you run the simulation for more than a certain number of years. Code will be added to fix this. 
+
+Input file format:
+1. simulation length in years 
+2. whether or not the person is financially literate (0 if not, 1 if yes)
+3. starting credit card and student loan debt
+4. monthly payment percentage for credit card and student loan debt
+5. monthly additional payment amount on credit card debt
+6. price of house the person wants to purchase
+7. percentage down payment the person will make on the house
+8. yearly interest rate on mortgage loan
+9. yearly interest paid to person in their savings account
+10. monthly cost of renting an apartment
+11. person's yearly salary
+12. number of years person will take to pay of their mortgage
