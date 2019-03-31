@@ -5,14 +5,19 @@ Currently, the program crashes if you run the simulation for more than a certain
 
 Input file format:
 1. simulation length in years 
-2. whether or not the person is financially literate (0 if not, 1 if yes)
-3. starting credit card and student loan debt
-4. monthly payment percentage for credit card and student loan debt
-5. monthly additional payment amount on credit card debt
-6. price of house the person wants to purchase
-7. percentage down payment the person will make on the house
-8. yearly interest rate on mortgage loan
-9. yearly interest paid to person in their savings account
-10. monthly cost of renting an apartment
-11. person's yearly salary
-12. number of years person will take to pay of their mortgage
+2. starting credit card and student loan debt
+3. monthly payment percentage for credit card and student loan debt
+4. monthly additional payment amount on credit card debt
+5. price of house the person wants to purchase
+6. percentage down payment the person will make on the house
+7. yearly interest rate on mortgage loan
+8. yearly interest paid to person in their savings account
+9. monthly cost of renting an apartment
+10. person's yearly salary
+11. number of years person will take to pay of their mortgage
+12. percentage of their income the person puts into their savings account each year
+13. percentage of their income the person puts into their checking account each year
+14. At the end of each year, the person's wealth will be divided by this number to account      for expenses. 
+15. Yearly interest rate on credit card and student loan debt.
+16. Initial savings account balance
+17. Initial checking account balance
