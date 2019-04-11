@@ -8,8 +8,11 @@
 typedef struct person{
   double salary; //person's yearly salary
   double savings; //amount of money in person's savings account
+  double percentSaving; //percentage of salary they put into savings account each year
+  double percentChecking; //percentage of salary they put into checking account each year
   double checking; //amount of money in person's checking account
   double debt; // the sum of the person's credit card and student loan debt
+  double debtInterest; //yearly interest rate on credit card and student loan debt
   double housePrice; //cost of the house that the person wants to buy
   double mortgageLoan; // the amount of mortgage debt the person carries
   double mortgageDown; // when the person has this percentage of the housePrice in their checking account, they will make a down payment on a house
@@ -23,7 +26,7 @@ typedef struct person{
   double mortgageInterest; // Yearly percent interest on the home mortgage loan 
   double apartmentCost; //monthly cost of renting an apartment
   bool house; // true if person owns a house. False otherwise.
-  bool finLiterate; // true if the person is financially literate. false otherwise.
+  double wealthDivisor; //person's wealth is divided by this number at end of each year
 }person;
 
 // typedef struct inputParams{ DELETE THIS CODE
@@ -50,7 +53,7 @@ void debt(person* person, double initialAmount, double rate, double addlPay){
     person -> debtPaid += monthlyPayment;
     monthsSimulated++;
   }
-  person -> debt *= 1.2; // Debt is compounded 20% annually
+  person -> debt *= (1 + person -> debtInterest); // Debt is compounded 20% annually
   person -> yearsWithDebt++;  
 }
 
@@ -78,61 +81,77 @@ void house(person* person, double housePrice, double interestRate, double mortga
 }
 
 //simulationLength is the number of years to be simulated
-int* simulator(person* person, double simulationLength){
+int* simulator(person* person, int simulationLength){
   
   int yearsSimulated = 1; //The number of years that have been simulated 
-  double wealth = 0;
+  double wealth = person->savings + person->checking - person->debt - person->mortgageLoan;
   double housePrice = person -> housePrice;
-  double rentAmount = person -> apartmentCost;
   int mortgageTerm = person -> mortgageTerm;
   double yearlySalary = person -> salary;
   
-  static int wealthArr[41]; // this needs to be static because local variables dissapear when method is exited
-  wealthArr[0] = -24100; // Why is the inital debt equal to -24100?
+  static int wealthArr[101]; // this needs to be static because local variables dissapear when method is exited. The maximum number of years that can be simulated is 100 years
+  wealthArr[0] = wealth; //first array element stores the person's initial wealth 
   
   while(yearsSimulated <= simulationLength){
-    person -> savings += yearlySalary * 0.2; //Person puts 20 percent into savings
-    person -> checking += yearlySalary * 0.3;//Person puts 30 percent into checkings
-
-    //The following if-else statements are likely to contain a bug and need to be tested
+    person -> savings += yearlySalary * (person -> percentSaving); 
+    person -> checking += yearlySalary * (person -> percentChecking);
+    
     if(person -> house == true){
       house(person, housePrice, person -> mortgageInterest, mortgageTerm);
     }
     else{
-      if(person -> finLiterate == true){
-        if(person -> checking > housePrice * 0.2){
-          person -> checking -= housePrice * 0.2;
-          person -> mortgageLoan = housePrice - (housePrice * 0.2);
-          person -> house = true;
-        }
-        else{
-          rent(person, rentAmount);
-        }
+      if(person -> checking > housePrice * (person -> mortgageDown)){
+        person -> checking -= housePrice * (person -> mortgageDown);
+        person -> mortgageLoan = housePrice - (housePrice * (person -> mortgageDown));
+        person -> house = true;
       }
       else{
-        if(person -> checking > housePrice * 0.5){
-          person -> checking -= housePrice * 0.05;
-          person -> mortgageLoan = housePrice - (housePrice * 0.05);
-          person -> house = true;
-        }
-        else{
-          rent(person, rentAmount);
-        }
+        rent(person, person -> apartmentCost);
       }
-    }  
-    debt(person, person -> debt, .03, person -> addlPayment);
+    }
+    
+    if(person -> debt > 0){
+      debt(person, person -> debt, person -> minPayment, person -> addlPayment);
+    }
     savingsPlacement(person, person -> savingsRate);
     wealth = (person->savings + person->checking - person->debt - person->mortgageLoan);
-    wealth /= 3.0;
+    wealth /= person -> wealthDivisor;
     wealthArr[yearsSimulated] = (int)wealth;
     yearsSimulated++;
   }
+
   return wealthArr;
+}
+
+//Initializes the person struct's values with the values in the params array
+void initializeParams(person* person, double* params){
+
+  person -> yearsWithDebt = 0;
+  person -> yearsRented = 0;
+  person -> debtPaid = 0;
+  person -> house = false;
+
+  person -> debt = params[1]; 
+  person -> minPayment = params[2]; 
+  person -> addlPayment = params[3]; 
+  person -> housePrice = params[4];
+  person -> mortgageDown = params[5];
+  person -> mortgageInterest = params[6];
+  person -> savingsRate = params[7];
+  person -> apartmentCost = params[8];
+  person -> salary = params[9];
+  person -> mortgageTerm = params[10];
+  person -> percentSaving = params[11];
+  person -> percentChecking = params[12];
+  person -> wealthDivisor = params[13];
+  person -> debtInterest = params[14];
+  person -> savings = params[15];
+  person -> checking = params[16];
 }
 
 double* readFile(){
   
-  const int parameterCount = 12; //Number of input parameters in input file
+  const int parameterCount = 17; //Number of input parameters in input file
   FILE *myFile;
   myFile = fopen("input.txt", "r"); //Opening input file
 
@@ -143,44 +162,27 @@ double* readFile(){
   for (i = 0; i < parameterCount; i++){
     fscanf(myFile, "%lf", &paramArray[i] );
   }
-  //Delete this for loop
-  // for (i = 0; i < 10; i++){ 
-  //   printf("Number is: %d\n\n", numberArray[i]);
-  // }
 
   fclose(myFile);
   return paramArray; //Returns an array containing the input parameters
 }
 
+void writeToFile(person person, int* personWealth, int yearsToSimulate){
 
-//Initializes the person struct's values with the values in the params array
-void initializeParams(person* person, double* params){
+  FILE *outputFile; 
+  outputFile = fopen ("output.txt", "w");
 
+  fprintf(outputFile, "Initial wealth: $%d\n", personWealth[0]);
+
+  for(int i = 1; i < yearsToSimulate + 1; i++){
+    fprintf(outputFile, "Year %d: $%d\n", i, personWealth[i]);
+  }
+
+  fprintf(outputFile, "Debt Paid: %lf\n", person.debtPaid);
+  fprintf(outputFile, "Years With Debt: %lf", person.yearsWithDebt);
   
-  if(params[1] == 0){
-    person -> finLiterate = false;
-  }
-  else{
-    person -> finLiterate = true;
-  }
-
-  person -> yearsWithDebt = 0;
-  person -> savings = 0;
-  person -> checking = 0;
-  person -> yearsRented = 0;
-  person -> debtPaid = 0;
-  person -> house = false;
-
-  person -> debt = params[2]; 
-  person -> minPayment = params[3]; 
-  person -> addlPayment = params[4]; 
-  person -> housePrice = params[5];
-  person -> mortgageDown = params[6];
-  person -> mortgageInterest = params[7];
-  person -> savingsRate = params[8];
-  person -> apartmentCost = params[9];
-  person -> salary = params[10];
-  person -> mortgageTerm = params[11];
+  
+  fclose(outputFile);
 }
 
 int main(void) {
@@ -188,23 +190,24 @@ int main(void) {
   person person;
   int yearsToSimulate;
   int* personWealth; //Pointer to array that stores person's wealth values
-  // inputStruct params; //params is a struct containing the input parameters
-  // double paramArray[12]; //The file should contain 12 parameters
   double* paramArray;
   paramArray = readFile();
-  printf("%lf\n", paramArray[3]);
 
   yearsToSimulate = paramArray[0];
-  initializeParams(&person, paramArray);
 
-  
+  initializeParams(&person, paramArray);  
 
   personWealth = simulator(&person, yearsToSimulate);
 
-  for(int i = 0; i < 41; i++){
-    printf("wealth: %d\n", personWealth[i]);
+  writeToFile(person, personWealth, yearsToSimulate);
+
+  printf("Initial wealth: $%d\n", personWealth[0]);
+  for(int i = 1; i < yearsToSimulate + 1; i++){
+    printf("Year %d: $%d\n", i, personWealth[i]);
   }
+  
+  printf("Debt Paid: %lf\n", person.debtPaid);
+  printf("Years With Debt: %lf", person.yearsWithDebt);
 
   return 0;
 }
-
